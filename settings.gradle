@@ -1,2 +1,3 @@
 rootProject.name = 'WorkoutWizard-UserManagement'
 include(':user-core')
+include(':user-client')
