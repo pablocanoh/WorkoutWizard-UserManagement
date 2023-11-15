@@ -1,0 +1,8 @@
+plugins {
+    id 'java'
+}
+
+group = 'edu.uoc.client'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {}
