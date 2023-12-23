@@ -13,3 +13,7 @@ subprojects {
         useJUnitPlatform()
     }
 }
+
+ext {
+    springVersion = '3.1.6'
+}
