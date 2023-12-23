@@ -9,6 +9,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}"
     implementation "org.projectlombok:lombok:1.18.26"
     implementation "org.springframework.boot:spring-boot-starter-security:${springVersion}"
+    implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
 
     annotationProcessor "org.projectlombok:lombok:1.18.26"
     implementation "org.springframework.boot:spring-boot-docker-compose:${springVersion}"

@@ -3,7 +3,7 @@ package edu.uoc.workoutwizardusermanagement.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uoc.workoutwizardusermanagement.WorkoutWizardUserManagementApplication;
 import edu.uoc.workoutwizardusermanagement.controller.dtos.CreateUserRequest;
-import edu.uoc.workoutwizardusermanagement.model.User;
+import edu.uoc.workoutwizardusermanagement.domain.User;
 import edu.uoc.workoutwizardusermanagement.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

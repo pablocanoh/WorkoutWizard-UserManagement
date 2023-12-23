@@ -1,6 +1,6 @@
 package edu.uoc.workoutwizardusermanagement.services;
 
-import edu.uoc.workoutwizardusermanagement.model.User;
+import edu.uoc.workoutwizardusermanagement.domain.User;
 import edu.uoc.workoutwizardusermanagement.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ public class UserServiceImplTest {
 
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User createdUser = userService.createUser(username, email, password);
+        User createdUser = userService.createUser(username, password);
 
         assertEquals(username, createdUser.getUsername());
         assertEquals(email, createdUser.getEmail());
