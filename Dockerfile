@@ -14,7 +14,7 @@ COPY ${JAR_FILE} /app/spring-boot-application.jar
 WORKDIR /app
 
 # Expone el puerto en el que se ejecutará la aplicación
-EXPOSE 8080
+EXPOSE 8082
 
 # Comando para ejecutar la aplicación
 CMD ["java", "-jar", "spring-boot-application.jar"]
