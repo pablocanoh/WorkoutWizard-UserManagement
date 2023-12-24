@@ -19,3 +19,34 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:5.2.0"
 }
 
+repositories {
+    mavenCentral()
+    mavenLocal()
+    repositories {
+        maven {
+            name = 'WorkoutWizard-WorkoutManagement'
+            url = uri("https://maven.pkg.github.com/pablocanoh/WorkoutWizard-WorkoutManagement") // Reemplaza con tu usuario y repo
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven {
+            name = 'GitHubPackages-WorkoutWizard-RoutineManagment'
+            url = uri("https://maven.pkg.github.com/pablocanoh/WorkoutWizard-RoutineManagment")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven {
+            name = 'GitHubPackages-WorkoutWizard-commons'
+            url = uri("https://maven.pkg.github.com/pablocanoh/WorkoutWizard-commons")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
