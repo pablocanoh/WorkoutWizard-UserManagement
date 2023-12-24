@@ -30,7 +30,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t pcanohuoc/user-management:latest \
-            --build-arg JAR_FILE=workout-core/build/libs/*.jar \
+            --build-arg JAR_FILE=user-core/build/libs/*.jar \
             .
 
       - name: Publish Docker image
