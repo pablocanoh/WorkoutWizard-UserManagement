@@ -17,4 +17,4 @@ WORKDIR /app
 EXPOSE 8082
 
 # Comando para ejecutar la aplicación
-CMD ["java", "-jar", "spring-boot-application.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=prod", "spring-boot-application.jar"]
