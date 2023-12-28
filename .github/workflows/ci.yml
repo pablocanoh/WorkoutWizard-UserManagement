@@ -44,7 +44,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_IP }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             docker pull user-management:latest
             docker stop my-container || true
