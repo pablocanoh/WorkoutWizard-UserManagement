@@ -15,6 +15,9 @@ WORKDIR /app
 
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV APP_PORT=8082
+ENV DATABASE_URL=jdbc:postgresql://postgres-user:5432/userdb
+ENV DATABASE_USERNAME=myuser
+ENV DATABASE_PASSWORD=seret
 
 # Expone el puerto en el que se ejecutará la aplicación
 EXPOSE ${APP_PORT}
