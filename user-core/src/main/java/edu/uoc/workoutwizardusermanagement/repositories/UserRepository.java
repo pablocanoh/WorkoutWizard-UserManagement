@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByUsername(String username);
 
-    List<User> findAllByLoginAttempsGreaterThan(int loginAttempts);
+    List<User> findAllByLoginAttemptsGreaterThan(int loginAttempts);
 
     @Modifying
     @Query("update User u set u.loginAttempts = ?1 where u.id = ?2")

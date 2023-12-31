@@ -79,7 +79,7 @@ public class UserServiceImpl  implements UserService {
 
     @Scheduled(fixedRate = 3600000) // 3600000 milliseconds = 1 hour
     public void resetLoginAttempts() {
-        userRepository.findAllByLoginAttempsGreaterThan(0)
+        userRepository.findAllByLoginAttemptsGreaterThan(0)
                 .forEach(user ->
                         userRepository.updateUserLoginAttemptsById( 0, user.getId()));
     }
