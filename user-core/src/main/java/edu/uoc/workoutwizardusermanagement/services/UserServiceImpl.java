@@ -3,6 +3,7 @@ package edu.uoc.workoutwizardusermanagement.services;
 import edu.uoc.workoutwizardusermanagement.domain.User;
 import edu.uoc.workoutwizardusermanagement.exceptions.ManyAttemptsException;
 import edu.uoc.workoutwizardusermanagement.exceptions.UserAlreadyRegisteredException;
+import edu.uoc.workoutwizardusermanagement.exceptions.UserPasswordIncorrectFormatException;
 import edu.uoc.workoutwizardusermanagement.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -14,10 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @EnableScheduling
 @Service
 public class UserServiceImpl  implements UserService {
+
+    private static final String PASSWORD_PATTERN =
+            "^(?=.*[0-9])" +         // at least 1 digit
+                    "(?=.*[a-z])" +         // at least 1 lower case letter
+                    "(?=.*[A-Z])" +         // at least 1 upper case letter
+                    "(?=.*[@#$%^&+=])" +    // at least 1 special character
+                    "(?=\\S+$).{8,20}$";    // no whitespace, length between 8 and 20 characters
+
+    private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
     @Autowired
     private UserRepository userRepository;
@@ -36,6 +47,9 @@ public class UserServiceImpl  implements UserService {
             throw new UserAlreadyRegisteredException("Username already exists");
         }
 
+        if (!isValidPassword(password)) {
+            throw new UserPasswordIncorrectFormatException("Password is not valid");
+        }
 
         User user = User.builder()
                 .username(username)
@@ -87,4 +101,11 @@ public class UserServiceImpl  implements UserService {
                         userRepository.updateUserLoginAttemptsById( 0, user.getId()));
     }
 
-}
+    public static boolean isValidPassword(String password) {
+        if (password == null) {
+            return false;
+        }
+        return pattern.matcher(password).matches();
+
+
+    }

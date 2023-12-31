@@ -8,6 +8,7 @@ import edu.uoc.workoutwizardusermanagement.controller.dtos.RegisterState;
 import edu.uoc.workoutwizardusermanagement.domain.User;
 import edu.uoc.workoutwizardusermanagement.exceptions.ManyAttemptsException;
 import edu.uoc.workoutwizardusermanagement.exceptions.UserAlreadyRegisteredException;
+import edu.uoc.workoutwizardusermanagement.exceptions.UserPasswordIncorrectFormatException;
 import edu.uoc.workoutwizardusermanagement.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,8 @@ public class UserController {
             return ResponseEntity.ok(RegisterState.SUCCESS);
         } catch (UserAlreadyRegisteredException e) {
             return ResponseEntity.ok(RegisterState.USERNAME_ALREADY_EXISTS);
+        } catch (UserPasswordIncorrectFormatException e) {
+            return ResponseEntity.ok(RegisterState.PASSWORD_INCORRECT_FORMAT);
         }
     }
 
