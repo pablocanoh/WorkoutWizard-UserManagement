@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,7 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
+    @Transactional
     public Optional<User> login(String username, String password) {
         return userRepository.findByUsername(username)
                 .map(user -> {
