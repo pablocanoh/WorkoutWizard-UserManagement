@@ -58,9 +58,8 @@ public class UserController {
                     .map(user -> success(jwtTokenUtil.generateToken(user)))
                     .orElse(invalidCredentials());
         } catch (ManyAttemptsException e) {
-            LoginResponse.loginBlockedForManyAttempts();
+            return LoginResponse.loginBlockedForManyAttempts();
         }
 
-        return null;
     }
 }
