@@ -5,6 +5,8 @@ import edu.uoc.workoutwizardusermanagement.exceptions.ManyAttemptsException;
 import edu.uoc.workoutwizardusermanagement.exceptions.UserAlreadyRegisteredException;
 import edu.uoc.workoutwizardusermanagement.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@EnableScheduling
 @Service
 public class UserServiceImpl  implements UserService {
 
@@ -21,8 +24,6 @@ public class UserServiceImpl  implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    private static final ConcurrentHashMap<String, Integer> userLoginAttempts = new ConcurrentHashMap<>();
 
     @Override
     public List<User> findAll() {
@@ -59,20 +60,33 @@ public class UserServiceImpl  implements UserService {
 
     @Override
     public Optional<User> login(String username, String password) {
-        if (userLoginAttempts.getOrDefault(username, 0) >= 5) {
-            throw new ManyAttemptsException("Too many login attempts");
-        }
-
-        final var user = userRepository
-                .findByUsername(username)
-                .orElseThrow();
-
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            userLoginAttempts.put(username, 0);
-            return Optional.of(user);
-        } else {
-            userLoginAttempts.put(username, userLoginAttempts.getOrDefault(username, 0) + 1);
-            return Optional.empty();
-        }
+        return userRepository.findByUsername(username)
+                .map(user -> {
+                   if (user.getLoginAttemps() >= 3) {
+                       throw new ManyAttemptsException("Too many login attempts");
+                   }
+                   return user;
+                })
+                .flatMap(user -> {
+                    if (passwordEncoder.matches(password, user.getPassword())) {
+                        user.setLoginAttemps(0);
+                        userRepository.updateUserById(user.getId(), user);
+                        return Optional.of(user);
+                    } else {
+                        user.setLoginAttemps(user.getLoginAttemps() + 1);
+                        userRepository.updateUserById(user.getId(), user);
+                        return Optional.empty();
+                    }
+                });
     }
+
+    @Scheduled(fixedRate = 3600000) // 3600000 milliseconds = 1 hour
+    public void resetLoginAttempts() {
+        userRepository.findAllByLoginAttempsGreaterThan(0)
+                .forEach(user -> {
+                    user.setLoginAttemps(0);
+                    userRepository.updateUserById(user.getId(), user);
+                });
+    }
+
 }
