@@ -21,13 +21,7 @@ import java.util.regex.Pattern;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final String PASSWORD_PATTERN =
-            "^(?=.*[0-9])" +         // at least 1 digit
-                    "(?=.*[a-z])" +         // at least 1 lower case letter
-                    "(?=.*[A-Z])" +         // at least 1 upper case letter
-                    "(?=.*[@#$%^&+=])" +    // at least 1 special character
-                    "(?=\\S+$).{8,20}$";    // no whitespace, length between 8 and 20 characters
-
+    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-zA-Z]).{5,}$";
     private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
     @Autowired
