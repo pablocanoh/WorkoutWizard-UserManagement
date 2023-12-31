@@ -3,6 +3,7 @@ package edu.uoc.workoutwizardusermanagement.services;
 import edu.uoc.workoutwizardusermanagement.domain.User;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {

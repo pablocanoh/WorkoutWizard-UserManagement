@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserServiceImpl  implements UserService {
@@ -17,6 +18,8 @@ public class UserServiceImpl  implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private static final ConcurrentHashMap<String, Integer> userLoginAttempts = new ConcurrentHashMap<>();
 
     @Override
     public List<User> findAll() {
@@ -46,11 +49,18 @@ public class UserServiceImpl  implements UserService {
 
     @Override
     public User login(String username, String password) {
+        if (userLoginAttempts.getOrDefault(username, 0) >= 5) {
+            throw new RuntimeException("Too many login attempts");
+        }
+
+        userLoginAttempts.put(username, userLoginAttempts.getOrDefault(username, 0) + 1);
+
         final var user = userRepository
                 .findByUsername(username)
                 .orElseThrow();
 
         if (passwordEncoder.matches(password, user.getPassword())) {
+            userLoginAttempts.put(username, 0);
             return user;
         } else {
             throw new RuntimeException("Invalid credentials");
