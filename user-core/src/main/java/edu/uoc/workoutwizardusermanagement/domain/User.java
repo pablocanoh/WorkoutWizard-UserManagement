@@ -35,5 +35,5 @@ public class User {
     private String password;
 
     @Column
-    private int loginAttemps;
+    private int loginAttempts;
 }

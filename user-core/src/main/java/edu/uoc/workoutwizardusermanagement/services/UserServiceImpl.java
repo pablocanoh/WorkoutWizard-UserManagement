@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @EnableScheduling
 @Service
@@ -62,19 +61,17 @@ public class UserServiceImpl  implements UserService {
     public Optional<User> login(String username, String password) {
         return userRepository.findByUsername(username)
                 .map(user -> {
-                   if (user.getLoginAttemps() >= 3) {
+                   if (user.getLoginAttempts() >= 3) {
                        throw new ManyAttemptsException("Too many login attempts");
                    }
                    return user;
                 })
                 .flatMap(user -> {
                     if (passwordEncoder.matches(password, user.getPassword())) {
-                        user.setLoginAttemps(0);
-                        userRepository.updateUserById(user.getId(), user);
+                        userRepository.updateUserLoginAttemptsById(0, user.getId());
                         return Optional.of(user);
                     } else {
-                        user.setLoginAttemps(user.getLoginAttemps() + 1);
-                        userRepository.updateUserById(user.getId(), user);
+                        userRepository.updateUserLoginAttemptsById(user.getLoginAttempts() + 1, user.getId());
                         return Optional.empty();
                     }
                 });
@@ -83,10 +80,8 @@ public class UserServiceImpl  implements UserService {
     @Scheduled(fixedRate = 3600000) // 3600000 milliseconds = 1 hour
     public void resetLoginAttempts() {
         userRepository.findAllByLoginAttempsGreaterThan(0)
-                .forEach(user -> {
-                    user.setLoginAttemps(0);
-                    userRepository.updateUserById(user.getId(), user);
-                });
+                .forEach(user ->
+                        userRepository.updateUserLoginAttemptsById( 0, user.getId()));
     }
 
 }
