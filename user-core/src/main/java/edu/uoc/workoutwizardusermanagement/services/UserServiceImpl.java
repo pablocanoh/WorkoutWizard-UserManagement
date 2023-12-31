@@ -79,6 +79,7 @@ public class UserServiceImpl  implements UserService {
                 });
     }
 
+    @Transactional
     @Scheduled(fixedRate = 3600000) // 3600000 milliseconds = 1 hour
     public void resetLoginAttempts() {
         userRepository.findAllByLoginAttemptsGreaterThan(0)
