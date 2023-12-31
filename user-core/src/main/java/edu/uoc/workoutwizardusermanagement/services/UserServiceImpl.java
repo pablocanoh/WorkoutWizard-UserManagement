@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 @EnableScheduling
 @Service
-public class UserServiceImpl  implements UserService {
+public class UserServiceImpl implements UserService {
 
     private static final String PASSWORD_PATTERN =
             "^(?=.*[0-9])" +         // at least 1 digit
@@ -77,10 +77,10 @@ public class UserServiceImpl  implements UserService {
     public Optional<User> login(String username, String password) {
         return userRepository.findByUsername(username)
                 .map(user -> {
-                   if (user.getLoginAttempts() >= 3) {
-                       throw new ManyAttemptsException("Too many login attempts");
-                   }
-                   return user;
+                    if (user.getLoginAttempts() >= 3) {
+                        throw new ManyAttemptsException("Too many login attempts");
+                    }
+                    return user;
                 })
                 .flatMap(user -> {
                     if (passwordEncoder.matches(password, user.getPassword())) {
@@ -98,7 +98,7 @@ public class UserServiceImpl  implements UserService {
     public void resetLoginAttempts() {
         userRepository.findAllByLoginAttemptsGreaterThan(0)
                 .forEach(user ->
-                        userRepository.updateUserLoginAttemptsById( 0, user.getId()));
+                        userRepository.updateUserLoginAttemptsById(0, user.getId()));
     }
 
     public static boolean isValidPassword(String password) {
@@ -107,5 +107,5 @@ public class UserServiceImpl  implements UserService {
         }
         return pattern.matcher(password).matches();
 
-
     }
+}
