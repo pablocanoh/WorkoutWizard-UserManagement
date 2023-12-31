@@ -1,12 +1,15 @@
 package edu.uoc.workoutwizardusermanagement.services;
 
 import edu.uoc.workoutwizardusermanagement.domain.User;
+import edu.uoc.workoutwizardusermanagement.exceptions.ManyAttemptsException;
+import edu.uoc.workoutwizardusermanagement.exceptions.UserAlreadyRegisteredException;
 import edu.uoc.workoutwizardusermanagement.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,10 +31,17 @@ public class UserServiceImpl  implements UserService {
 
     @Override
     public User createUser(String username, String password) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new UserAlreadyRegisteredException("Username already exists");
+        }
+
+
         User user = User.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .build();
+
+
         return userRepository.save(user);
     }
 
@@ -48,12 +58,10 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
-    public User login(String username, String password) {
+    public Optional<User> login(String username, String password) {
         if (userLoginAttempts.getOrDefault(username, 0) >= 5) {
-            throw new RuntimeException("Too many login attempts");
+            throw new ManyAttemptsException("Too many login attempts");
         }
-
-        userLoginAttempts.put(username, userLoginAttempts.getOrDefault(username, 0) + 1);
 
         final var user = userRepository
                 .findByUsername(username)
@@ -61,9 +69,10 @@ public class UserServiceImpl  implements UserService {
 
         if (passwordEncoder.matches(password, user.getPassword())) {
             userLoginAttempts.put(username, 0);
-            return user;
+            return Optional.of(user);
         } else {
-            throw new RuntimeException("Invalid credentials");
+            userLoginAttempts.put(username, userLoginAttempts.getOrDefault(username, 0) + 1);
+            return Optional.empty();
         }
     }
 }

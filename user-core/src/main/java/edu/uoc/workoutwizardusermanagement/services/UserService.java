@@ -16,5 +16,5 @@ public interface UserService {
 
     User getUser(UUID id);
 
-    User login(String username, String password);
+    Optional<User> login(String username, String password);
 }
